@@ -1,0 +1,55 @@
+### Evaluation settings:
+eval_method: ['traditional', 'fair', 'weighted']
+exclude: ['NONE', 'EMPTY']
+focus: target
+ignore_punct: False
+labels: ['all']
+system_in: ./../data/system/ner_spans.csv
+target_in: ./../data/target/ner_spans.csv
+weights: {'LE': {'TP': 0, 'FP': 0.5, 'FN': 0.5}, 'BES': {'TP': 0.5, 'FP': 0, 'FN': 0.5}, 'BEL': {'TP': 0.5, 'FP': 0.5, 'FN': 0}, 'BEO': {'TP': 0.5, 'FP': 0.25, 'FN': 0.25}, 'LBE': {'TP': 0, 'FP': 0.5, 'FN': 0.5}, 'TP': {'TP': 1}, 'FP': {'FP': 1}, 'FN': {'FN': 1}}
+
+
+### Traditional evaluation:
+Label	TP	FP	FN	Prec	Rec	F1
+LOC	2132	251	244	89.47	89.73	89.60
+ORG	1002	260	328	79.40	75.34	77.31
+OTH	473	132	305	78.18	60.80	68.40
+PER	1552	151	142	91.13	91.62	91.37
+overall	5159	794	1019	86.66	83.51	85.05
+
+### Fair evaluation:
+Label	TP	FP	LE	BE	LBE	FN	Prec	Rec	F1
+LOC	2132	85	56	54	38	102	93.06	92.37	92.72
+ORG	1002	91	76	43	44	171	85.31	79.87	82.50
+OTH	473	50	89	41	39	148	77.86	67.04	72.05
+PER	1552	41	31	35	23	56	94.78	93.92	94.35
+overall	5159	267	252	173	144	477	90.34	87.14	88.71
+
+### Weighted evaluation:
+Label	LE	BES	BEL	BEO	LBE	TP	FP	FN	Prec	Rec	F1
+LOC	56	27	27	0	38	2132	85	102	93.69	93.00	93.34
+ORG	76	16	27	0	44	1002	91	171	86.15	81.07	83.53
+OTH	89	14	23	4	39	473	50	148	79.60	69.17	74.02
+PER	31	11	24	0	23	1552	41	56	95.15	94.66	94.91
+overall	252	68	101	4	144	5159	267	477	91.04	88.08	89.53
+
+### Comparison:
+Version	Prec	Rec	F1
+Traditional	86.66	83.51	85.05
+Fair	90.34	87.14	88.71
+Weighted	91.04	88.08	89.53
+
+### Confusion matrix:
+Target\System	LOC	ORG	OTH	PER	_
+LOC	54	52	14	28	102
+ORG	65	43	29	26	171
+OTH	41	57	41	30	148
+PER	14	29	11	35	56
+_	85	91	50	41	0
+
+### Target data stats:
+Label	Freq	%
+OTH	778	12.59
+PER	1694	27.42
+ORG	1330	21.53
+LOC	2376	38.46
