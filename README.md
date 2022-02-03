@@ -14,11 +14,28 @@ This repository contains a Python implementation of the suggested algorithm to i
 
 In the `/data` folder, I also provide the example [data sets](#example-data) from my paper with system and target annotations of named entities, chunks, and topological fields in a custom [input format](#input). The [config files](#configuration) that I used for the exemplary evaluation are located in the `/config` folder. The [result files](#output) can be found in the `/eval` folder.   
 
-For more details on the additional error types, the new algorithm and the example evaluation, please refer to my [paper]().
+For more details on the additional error types, the new algorithm and the example evaluation, please refer to my [paper](#acknowledgement).
+
+## Table of content
+
+1. [Usage](#usage)  
+   - [Stand-alone version](#stand-alone-version)  
+       - [Configuration](#configuration)  
+       - [Input](#input)  
+       - [Output](#output)
+       - [Weights](#weights)  
+   - [Import as module](#import-as-module)  
+       - [Determine fine-grained error types](#determine-fine-grained-error-types)  
+       - [Determine span overlap type](#determine-span-overlap-type)  
+       - [Calculate fair or customized scores](#calculate-fair-or-customized-scores)  
+       - [Get simple data statistics](#get-simple-data-statistics)  
+2. [Example data](#example-data)
+3. [Acknowledgement](#acknowledgement)
+4. [References](#references)
 
 ## Usage
 
-The application of this FairEval implementation requires [Python 3](https://www.python.org/downloads/) to be installed.
+The usage of this FairEval implementation requires [Python 3](https://www.python.org/downloads/) to be installed.
 
 ### Stand-alone version
 
@@ -32,9 +49,27 @@ When called as described above, the tool will import your [target and system dat
 
 #### Configuration
 
+When FairEval is used as a stand-alone version, it requires a config file that specifies the evaluation settings. The following parameters are mandatory:
+
+- `target_in`: file or directory containing the target annotation (filename(s) must be identical to the ones in `system_in`)
+- `system_in`: file or directory containing the system annotation (filename(s) must be identical to the ones in `target_in`)
+
+Optionally, you can also specify:
+
+- `labels`: comma-separated list of labels to evaluate (e.g., `NP, PP, AP, ADVP`; default: `all`)
+- `exclude`: comma-separated list of labels to exclude (e.g., `DUMMY, ROOT` if you used dummy labels or don't want to evaluate the ROOT node; default `NONE, EMPTY`)
+- `ignore_punct`: whether to ignore punctuation during evaluation (only possible for [CoNLL input](#input) with POS annotation; default: True)
+- `focus`: which label to count in the case of labeling and labeling boundary errors (`system` or `target` (default))
+- `eval_method`: comma-separated list of evaluation methods to apply (e.g., `traditional, fair, weighted`; default: `all`)
+- `weights`: formula with weights for different error types for the weighted evaluation (see [below](#weights))
+- `eval_out`: where to write the results; if a directory is given, will create a file `eval.csv` there; if omitted, will output results to the command line (see also [here](#output))
+
 #### Input 
 
 #### Output
+
+#### Weights
+
 
 ### Import as module
 
