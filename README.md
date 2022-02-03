@@ -66,6 +66,43 @@ Optionally, you can also specify:
 
 #### Input 
 
+The stand-alone version of this implementation accepts two different input formats.
+
+**1. Span files**
+
+A span file contains one span per line with sentences separated by an empty line.
+The lines are expected to contain four tab-separated columns:
+
+ Column   |  Content 
+ :--------|:---------------
+ Label    | Span label  
+ Begin    | Index of the first included token (must be convertible to int)  
+ End      | Index of the last included token (must be convertible to int and equal or greater than begin)  
+ Tokens   | Comma-separated list of indices of the tokens in the span (must be convertible to int with begin <= i <= end); if no (valid) indices are given, the range begin:end is used
+
+For an example of span files, have a look at the `/data` folder of this repository. This is a sample from the NER data:
+
+```
+PER	6	7	6, 7        <-- This is the first span of type PER from token 6 to 7 in the first sentence
+PER	13	14	13, 14      <-- And the second span of type PER from token 13 to 14 in the first sentence
+ORG	20	20	20
+
+PER	4	4	4           <-- The new line indicates a new sentence
+
+OTH	2	5	2, 3, 4, 5  <-- And here is a third sentence
+PER	19	20	19, 20
+ORG	26	26	26
+
+```
+
+System and target files are aligned automatically, so make sure that they contain the **same number of sentences**! Otherwise, annotations from different sentences will be compared with each other. If a sentence does not include any spans, add a dummy span instead like:
+
+```
+EMPTY    999    999    999
+```
+
+**2. CoNLL2000 files**
+
 #### Output
 
 #### Weights
