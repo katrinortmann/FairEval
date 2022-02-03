@@ -145,8 +145,23 @@ When run as a stand-alone tool, FairEval outputs:
 4. The confusion matrix with target labels (rows) and system labels (columns). The `_` row shows false positives, the `_` column contains the false negatives. On the diagonal, boundary errors are displayed. The other cells contain labeling and labeling-boundary errors.
 5. The distribution of labels in the target data in absolute numbers and percent
 
+The `/eval` folder of this repository contains the result files for the example data from the `/data` folder.
+
 #### Weights
 
+In my paper, I suggested that every labeling, boundary and labeling-boundary error should count as half false positive and half false negative. I also gave suggestions for alternative weights for different types of boundary errors. The `weights` parameter in the config file allows to specify your own weights that should be used for the calculation of precision and recall.
+
+You can also use the weight formula to indicate, which of the available additional error types should be considered.
+
+Weights are parsed from comma-separated input formulas of the form:
+            
+> error_type = weight1 * TP + weight2 * FP + weight3 * FN
+
+You can leave out zero-weights. For example, in my paper, I suggested the following formulas:
+
+> weights = LE = 0.5 FP + 0.5 FN, BES = 0.5 TP + 0.5 FN, BEL = 0.5 TP + 0.5 FP, BEO = 0.5 TP + 0.25 FP + 0.25 FN, LBE = 0.5 FP + 0.5 FN
+
+Asterisks and spaces are optional. As long as commas and equal signs are used properly, the formulas will likely be recognized properly. You can have a look at the settings section in the output file to double-check if your weights were parsed correctly.
 
 ### Import as module
 
