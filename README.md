@@ -66,7 +66,7 @@ Optionally, you can also specify:
 
 #### Input 
 
-The stand-alone version of this implementation accepts two different input formats.
+The stand-alone version of this implementation accepts two different input formats: span files and CoNLL2000 files.
 
 **1. Span files**
 
@@ -103,7 +103,47 @@ EMPTY    999    999    999
 
 **2. CoNLL2000 files**
 
+[CoNLL2000]() files contain one token per line with sentences separated by an empty line. Each line consists of three space-separated columns.
+
+Column   |  Content 
+:--------|:---------------
+Form     | The word form
+XPOS     | POS tag of the word (ideally STTS, UPOS, or PTB)
+Annotation | Span annotation in BIO format (see below); multiple spans are separated with a pipe symbol
+
+BIO tags consist of the token's position in the span (begin `B`, inside `I`, outside `O`), a dash `-` and the span label, e.g., `B-NP`, `I-AC`, or in the case of stacked annotations `I-RELC|B-NP`.
+
+The importer accepts `O`, `_` and an empty string as annotations outside of spans.
+
+For stacked spans, the annotations must be sorted by length from left to right. A span on the right side of a pipe sign is included in the span left to the pipe sign. Overlapping spans are not supported.
+
+An example for a stacked span annotation could be (displayed with tabs instead of spaces for better readability):
+
+```
+Ruhr-Universität  NE    B-ORG          
+Bochum            NE    I-ORG|B-LOC
+```
+
+It is possible to encode complex hierarchical structures with BIO tags (as long as they are continuous; discontinuous annotations or "crossing edges" cannot be encoded). The following example displays a toy constituency tree in the form of BIO tags.
+
+```
+Das         This        B-S|B-NP
+ist         is          I-S|B-VP
+ein         a           I-S|I-VP|B-NP
+einfacher   simple      I-S|I-VP|I-NP|B-AP
+Satz        sentence    I-S|I-VP|I-NP
+.           .           I-S|
+```
+        
 #### Output
+
+When run as a stand-alone tool, FairEval outputs:
+
+1. The evaluation settings
+2. Results for each evaluation method (traditional, fair, and/or weighted evaluation) including per-label and overall counts of true positives and errors and the calculated statistics
+3. A comparison of precision, recall, and F1-score for the different evaluation methods
+4. The confusion matrix with target labels (rows) and system labels (columns). The `_` row shows false positives, the `_` column contains the false negatives. On the diagonal, boundary errors are displayed. The other cells contain labeling and labeling-boundary errors.
+5. The distribution of labels in the target data in absolute numbers and percent
 
 #### Weights
 
