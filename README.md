@@ -157,7 +157,7 @@ Weights are parsed from comma-separated input formulas of the form:
             
 > error_type = weight1 * TP + weight2 * FP + weight3 * FN
 
-You can leave out zero-weights. For example, in my paper, I suggested the following formulas:
+You can leave out zero-weights. For example, in my paper, I suggested the following formula:
 
 > weights = LE = 0.5 FP + 0.5 FN, BES = 0.5 TP + 0.5 FN, BEL = 0.5 TP + 0.5 FP, BEO = 0.5 TP + 0.25 FP + 0.25 FN, LBE = 0.5 FP + 0.5 FN
 
@@ -259,9 +259,76 @@ Possible output values are either one of the following strings
 
 #### Calculate fair or customized scores
 
-precision(eval_dict, version, weights)
-recall(eval_dict, version, weights)
-fscore(eval_dict)
+Suppose you already have an evaluation dictionary that contains your error counts in the following form:
+
+```
+{
+ "TP"                   : count, 
+ "FP"                   : count, 
+ "FN"                   : count,
+ "additionalErrorType1" : count, 
+ "additionalErrorType2" : count, 
+ ...
+}
+```    
+
+Then, you can use the functions `precision(eval_dict, version, weights)` and `recall(eval_dict, version, weights)` to calculate different versions of precision and recall.
+
+Precision is calculated as the number of true positives divided by the number of true positives plus false positives plus (optionally) additional error types.
+Similarly, recall is calculated as the number of true positives divided by the number of true positives plus false negatives plus (optionally) additional error types.
+
+As input, the functions expect a dictionary with error types as keys and counts as values.
+For 'traditional' evaluation, true positives (key: TP) and false positives (key: FP) or false negatives (key: FN) are required.
+The 'fair' evaluation is based on true positives (TP), false positives (FP) or false negatives (FN), labeling errors (LE), boundary errors (BE) and labeling-boundary errors (LBE).
+The 'weighted' evaluation can include any error type that is given as key in the weight dictionary.
+For missing keys, the count is set to 0.
+
+Which evaluation method is used, depends on the second argument. Options are `traditional` (default), `fair`, and `weighted`. If no weight dictionary is specified, `weighted` is identical to `fair`.
+
+The weight dictionary is passed to the functions to specify how much an error type should count as one of the traditional error types (or as true positive). Per default, every traditional error is counted as one error (or true positive) and each error of the additional types is counted as half false positive and half false negative:
+
+```
+{
+ "TP" :  {"TP" : 1},
+ "FP" :  {"FP" : 1},
+ "FN" :  {"FN" : 1},
+ "LE" :  {"TP" : 0, "FP" : 0.5, "FN" : 0.5},
+ "BE" :  {"TP" : 0, "FP" : 0.5, "FN" : 0.5},
+ "LBE" : {"TP" : 0, "FP" : 0.5, "FN" : 0.5}
+}
+```    
+
+Other suggested weights to count boundary errors as half true positives:
+
+```
+{
+ "TP" :  {"TP" : 1},
+ "FP" :  {"FP" : 1},
+ "FN" :  {"FN" : 1},
+ "LE" :  {"TP" : 0, "FP" : 0.5, "FN" : 0.5},
+ "BE" :  {"TP" : 0.5, "FP" : 0.25, "FN" : 0.25},
+ "LBE" : {"TP" : 0, "FP" : 0.5, "FN" : 0.5}
+}
+```
+
+Or to include different types of boundary errors (this corresponds to the formula in the [weights section](#weights)):
+
+```
+{
+ "TP" :  {"TP" : 1},
+ "FP" :  {"FP" : 1},
+ "FN" :  {"FN" : 1},
+ "LE" :  {"TP" : 0, "FP" : 0.5, "FN" : 0.5},
+ "LBE" : {"TP" : 0, "FP" : 0.5, "FN" : 0.5},
+ "BEO" : {"TP" : 0.5, "FP" : 0.25, "FN" : 0.25},
+ "BES" : {"TP" : 0.5, "FP" : 0, "FN" : 0.5},
+ "BEL" : {"TP" : 0.5, "FP" : 0.5, "FN" : 0}
+} 
+```
+
+Finally, the function `fscore(eval_dict)` takes a dictionary that contains a precision (key: `Prec`) and recall (key: `Rec`) value and calculates the harmonic mean, i.e., the F1-score.
+
+In case of a ZeroDivisionError, the score of the respective functions is set to 0.
 
 #### Get simple data statistics
 
