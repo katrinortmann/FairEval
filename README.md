@@ -18,7 +18,7 @@ For more details on the additional error types, the new algorithm and the exampl
 
 ## Usage
 
-The application of this FairEval implementation requires [Python 3](https://www.python.org/downloads/).
+The application of this FairEval implementation requires [Python 3](https://www.python.org/downloads/) to be installed.
 
 ### Stand-alone version
 
@@ -30,6 +30,12 @@ The config argument specifies a configuration file with the required parameters.
 
 When called as described above, the tool will import your [target and system data](#input) and carry out the evaluation according to the [specified options](#configuration). The results will be written to an [output file](#output) or the command line.
 
+#### Configuration
+
+#### Input 
+
+#### Output
+
 ### Import as module
 
 If you want to integrate and use FairEval in your own code, you can import it as a python module with
@@ -38,10 +44,10 @@ If you want to integrate and use FairEval in your own code, you can import it as
 
 Suggested applications include:
 
-1. Counting the different fine-grained error types in your data for a detailed error analysis
-2. Determine the type of overlap for a (labeling-)boundary error
-3. Calculate fair or customized precision, recall, and F1 scores on your error counts
-4. Get simple statistics about your data: how often do certain labels occur in the data set
+1. [Counting the different fine-grained error types in your data for a detailed error analysis](#determine-fine-grained-error-types)
+2. [Determine the type of overlap for a (labeling-)boundary error](#determine-span-overlap-type)
+3. [Calculate fair or customized precision, recall, and F1 scores on your error counts](#calculate-fair-or-customized-scores)
+4. [Get simple statistics about your data: how often do certain labels occur in the data set](#get-simple-data-statistics)
 
 #### Determine fine-grained error types
 
@@ -142,12 +148,6 @@ For the NER target data, the result would look like this:
                    'ORG' : 1330,
                    'LOC' : 2376 } }
 ```
-
-## Configuration
-
-## Input 
-
-## Output
 
 ## Example data
 
