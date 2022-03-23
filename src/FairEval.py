@@ -475,13 +475,17 @@ def compare_spans(target_spans, system_spans, focus="target"):
 
     ## 1. Compare input lists
     #Identify boundary errors: identical label but different, overlapping span
-    for t in target_spans:
+    i = 0
+    while i < len(target_spans):
+        t = target_spans[i]
 
         #Find possible boundary errors
         be = [s for s in system_spans
               if t[0] == s[0] and t[1:3] != s[1:3] 
                  and overlap_type((t[1], t[2]), (s[1], s[2])) in ("BES", "BEL", "BEO")]
-        if not be: continue
+        if not be: 
+            i += 1
+            continue
 
         #If there is more than one possible BE, take most similar one
         if len(be) > 1:
@@ -517,7 +521,9 @@ def compare_spans(target_spans, system_spans, focus="target"):
         counted_target.append(t)
 
     ## 2. Compare input target list with matched system list
-    for t in target_spans:
+    i = 0
+    while i < len(target_spans):
+        t = target_spans[i]
 
         #Find possible boundary errors in already matched spans
         #that still share unmatched tokens
@@ -525,7 +531,9 @@ def compare_spans(target_spans, system_spans, focus="target"):
               if t[0] == s[0] and t[1:3] != s[1:3] 
                 and overlap_type((t[1], t[2]), (s[1], s[2])) in ("BES", "BEL", "BEO")
                 and t[3].intersection(s[3])]
-        if not be: continue
+        if not be: 
+            i += 1
+            continue
 
         #If there is more than one possible BE, take most similar one
         if len(be) > 1:
@@ -559,14 +567,18 @@ def compare_spans(target_spans, system_spans, focus="target"):
         counted_target.append(t)
     
     ## 3. Compare input system list with matched target list
-    for s in system_spans:
+    i = 0
+    while i < len(system_spans):
+        s = system_spans[i]
 
         #Find possible boundary errors in already matched target spans
         be = [t for t in counted_target
                if t[0] == s[0] and t[1:3] != s[1:3] 
                   and overlap_type((t[1], t[2]), (s[1], s[2])) in ("BES", "BEL", "BEO")
                   and t[3].intersection(s[3])]
-        if not be: continue
+        if not be: 
+            i += 1
+            continue
 
         #If there is more than one possible BE, take most similar one
         if len(be) > 1:
@@ -603,13 +615,17 @@ def compare_spans(target_spans, system_spans, focus="target"):
 
     ## 1. Compare input lists
     #Identify labeling-boundary errors: different label but overlapping span
-    for t in target_spans:
+    i = 0
+    while i < len(target_spans):
+        t = target_spans[i]
 
         #Find possible boundary errors
         lbe = [s for s in system_spans
                if t[0] != s[0] and t[1:3] != s[1:3] 
                   and overlap_type((t[1], t[2]), (s[1], s[2])) in ("BES", "BEL", "BEO")]
-        if not lbe: continue
+        if not lbe: 
+            i += 1
+            continue
 
         #If there is more than one possible LBE, take most similar one
         if len(lbe) > 1:
@@ -643,14 +659,18 @@ def compare_spans(target_spans, system_spans, focus="target"):
         counted_target.append(t)
 
     ## 2. Compare input target list with matched system list
-    for t in target_spans:
+    i = 0
+    while i < len(target_spans):
+        t = target_spans[i]
 
         #Find possible labeling-boundary errors in already matched system spans
         lbe = [s for s in counted_system
                if t[0] != s[0] and t[1:3] != s[1:3] 
                   and overlap_type((t[1], t[2]), (s[1], s[2])) in ("BES", "BEL", "BEO")
                   and t[3].intersection(s[3])]
-        if not lbe: continue
+        if not lbe: 
+            i += 1
+            continue
 
         #If there is more than one possible LBE, take most similar one
         if len(lbe) > 1:
@@ -682,14 +702,18 @@ def compare_spans(target_spans, system_spans, focus="target"):
         counted_target.append(t)
     
     ## 3. Compare input system list with matched target list
-    for s in system_spans:
+    i = 0
+    while i < len(system_spans):
+        s = system_spans[i]
 
         #Find possible labeling-boundary errors in already matched target spans
         lbe = [t for t in counted_target
                if t[0] != s[0] and t[1:3] != s[1:3] 
                   and overlap_type((t[1], t[2]), (s[1], s[2])) in ("BES", "BEL", "BEO")
                   and t[3].intersection(s[3])]
-        if not lbe: continue
+        if not lbe: 
+            i += 1
+            continue
 
         #If there is more than one possible LBE, take most similar one
         if len(lbe) > 1:
