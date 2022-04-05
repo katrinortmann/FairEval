@@ -7,8 +7,12 @@ Created 09/2021
 '''
 
 import argparse
-import os, sys, re
+import os
+import sys
+import re
+from typing import Iterable
 from io import TextIOWrapper
+from copy import deepcopy
 
 #####################################
 
@@ -1058,49 +1062,90 @@ def get_sentences(filename):
         
 #############################
 
-def update_dict(eval_dict, sent_counts):
+def add_dict(base_dict, dict_to_add):
     """
-    Add error counts of a given sentence to overall eval dict.
+    Take a base dictionary and add the values 
+    from another dictionary to it.
 
-    The function takes the individual error counts of a sentence
-    included in sent_counts dict and adds them the overall
-    result dict eval_dict. Moreover, it updates the confusion matrix.
+    Contrary to standard dict update methods,
+    this function does not overwrite values in the
+    base dictionary. Instead, it is meant to add
+    the values of the second dictionary to the values
+    in the base dictionary. The dictionary is modified in-place.
 
-    Input: Overall eval dict and individual sentence dict
-    Output: Modified eval dict
-    """
+    For example:
 
-    for version in ["traditional", "fair"]:
-        #Add overall counts for traditional and fair evaluation
-        for cat in sent_counts["overall"][version]:
-            if not cat in eval_dict["overall"][version]:
-                eval_dict["overall"][version][cat] = 0
-            eval_dict["overall"][version][cat] += sent_counts["overall"][version][cat]
+    >> base = {"A" : 1, "B" : {"c" : 2, "d" : 3}, "C" : [1, 2, 3]}
+    >> add = {"A" : 1, "B" : {"c" : 1, "e" : 1}, "C" : [4], "D" : 2}
+    >> add_dict(base, add)
 
-        #Add per-label counts for traditional and fair evaluation
-        for label in sent_counts["per_label"][version]:
-            if label in eval_dict["per_label"][version]:
-                for cat in sent_counts["per_label"][version][label]:
-                    if cat in eval_dict["per_label"][version][label]:
-                        eval_dict["per_label"][version][label][cat] += sent_counts["per_label"][version][label][cat]
-                    else:
-                        eval_dict["per_label"][version][label][cat] = sent_counts["per_label"][version][label][cat]
-            else:
-                eval_dict["per_label"][version][label] = {}
-                for cat in sent_counts["per_label"][version][label]:
-                    eval_dict["per_label"][version][label][cat] = sent_counts["per_label"][version][label][cat]
+    will create a base dictionary:
     
-    #Add counts to confusion matrix
-    for lab in sent_counts["conf"]:
-        if not lab in eval_dict["conf"]:
-            eval_dict["conf"][lab] = {}
-        for syslab in sent_counts["conf"][lab]:
-            if not syslab in eval_dict["conf"][lab]:
-                eval_dict["conf"][lab][syslab] = sent_counts["conf"][lab][syslab]
-            else:
-                eval_dict["conf"][lab][syslab] += sent_counts["conf"][lab][syslab]
+    >> base
+    {'A': 2, 'B': {'c': 3, 'd': 3, 'e': 1}, 'C': [1, 2, 3, 4], 'D': 2}
 
-    return eval_dict
+    The function can handle different types of nested structures.
+    - Integers and float values are summed up.
+    - Lists are appended
+    - Sets are added (set union)
+    - Dictionaries are added recursively
+    For other value types, the base dictionary is left unchanged.
+
+    Input: Base dictionary and dictionary to be added.
+    Output: Base dictionary.
+    """
+
+    #For each key in second dict
+    for key, val in dict_to_add.items():
+
+        #It is already in the base dict
+        if key in base_dict:
+
+            #It has an integer or float value
+            if isinstance(val, (int, float)) \
+                and isinstance(base_dict[key], (int, float)):
+
+                #Increment value in base dict
+                base_dict[key] += val
+
+            #It has an iterable as value
+            elif isinstance(val, Iterable) \
+                and isinstance(base_dict[key], Iterable):
+
+                #List
+                if isinstance(val, list) \
+                    and isinstance(base_dict[key], list):
+                    #Append
+                    base_dict[key].extend(val)
+                
+                #Set
+                elif isinstance(val, set) \
+                    and isinstance(base_dict[key], set):
+                    #Set union
+                    base_dict[key].update(val)
+
+                #Dict
+                elif isinstance(val, dict) \
+                    and isinstance(base_dict[key], dict):
+                    #Recursively repeat
+                    add_dict(base_dict[key], val)
+                
+                #Something else
+                else:
+                    #Do nothing
+                    pass
+
+            #It has something else as value
+            else:
+                #Do nothing           
+                pass
+
+        #It is not in the base dict
+        else:
+            #Insert values from second dict into base
+            base_dict[key] = deepcopy(val)
+
+    return base_dict
 
 #############################
 
@@ -1137,14 +1182,22 @@ def calculate_results(eval_dict, **config):
     for version in config.get("eval_method", ["traditional", "fair"]):
     
         #Overall results
-        eval_dict["overall"][version]["Prec"] = precision(eval_dict["overall"][version], version, config.get("weights", {}))
-        eval_dict["overall"][version]["Rec"] = recall(eval_dict["overall"][version], version, config.get("weights", {}))
+        eval_dict["overall"][version]["Prec"] = precision(eval_dict["overall"][version], 
+                                                          version, 
+                                                          config.get("weights", {}))
+        eval_dict["overall"][version]["Rec"] = recall(eval_dict["overall"][version], 
+                                                      version,
+                                                      config.get("weights", {}))
         eval_dict["overall"][version]["F1"] = fscore(eval_dict["overall"][version])   
 
         #Per label results
         for label in eval_dict["per_label"][version]:
-            eval_dict["per_label"][version][label]["Prec"] = precision(eval_dict["per_label"][version][label], version, config.get("weights", {}))
-            eval_dict["per_label"][version][label]["Rec"] = recall(eval_dict["per_label"][version][label], version, config.get("weights", {}))
+            eval_dict["per_label"][version][label]["Prec"] = precision(eval_dict["per_label"][version][label], 
+                                                                       version, 
+                                                                       config.get("weights", {}))
+            eval_dict["per_label"][version][label]["Rec"] = recall(eval_dict["per_label"][version][label], 
+                                                                   version, 
+                                                                   config.get("weights", {}))
             eval_dict["per_label"][version][label]["F1"] = fscore(eval_dict["per_label"][version][label])
 
     return eval_dict
@@ -1589,7 +1642,7 @@ if __name__ == '__main__':
                                         config.get("focus", "target"))
 
             #Add results to eval dict
-            eval_dict = update_dict(eval_dict, sent_counts)
+            eval_dict = add_dict(eval_dict, sent_counts)
 
     #Calculate overall results
     eval_dict = calculate_results(eval_dict, **config)
