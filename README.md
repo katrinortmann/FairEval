@@ -2,7 +2,7 @@
 
 The traditional evaluation of labeled spans with precision, recall, and F1-score leads to double penalties for close-to-correct annotations. As Manning (2006) argues in an article about named entity recognition, this can lead to undesirable effects when systems are optimized for these traditional metrics.
 
-Building on his ideas, in Ortmann (forthcoming), I developed a new evaluation method that more accurately reflects true annotation quality by ensuring that every error is counted only once. In addition to the traditional categories of true positives (`TP`), false positives (`FP`), and false negatives (`FN`), the new method takes into account the more fine-grained error types suggested by Manning: labeling errors (`LE`), boundary errors (`BE`), and labeling-boundary errors (`LBE`). 
+Building on his ideas, in [Ortmann (forthcoming)](#acknowledgement), I developed a new evaluation method that more accurately reflects true annotation quality by ensuring that every error is counted only once. In addition to the traditional categories of true positives (`TP`), false positives (`FP`), and false negatives (`FN`), the new method takes into account the more fine-grained error types suggested by Manning: labeling errors (`LE`), boundary errors (`BE`), and labeling-boundary errors (`LBE`). 
 
 In addition, I also distinguish between different types of boundary errors, which enable an even more detailed error analysis:
 
@@ -10,11 +10,11 @@ In addition, I also distinguish between different types of boundary errors, whic
 - `BEL`: the system's annotation is larger than the target span
 - `BEO`: the system span overlaps with the target span
 
-This repository contains a Python implementation of the suggested algorithm to identify the new error types in flat and hierarchical spans. The program `FairEval.py` is located in the `/src` folder and can be used as a stand-alone tool (see [here](#stand-alone-version)) or be imported as a python module (see [here](#import-as-module)). 
+This repository contains a Python implementation of the suggested algorithm to identify the new error types in flat and hierarchical spans. The program `FairEval.py` is located in the `/src` folder and can be used as a stand-alone tool (see [here](#stand-alone-version)) or be imported as a Python module (see [here](#import-as-module)). 
 
 In the `/data` folder, I also provide the example [data sets](#example-data) from my paper with system and target annotations of named entities, chunks, and topological fields in a custom [input format](#input). The [config files](#configuration) that I used for the exemplary evaluation are located in the `/config` folder. The [result files](#output) can be found in the `/eval` folder.   
 
-For more details on the additional error types, the new algorithm and the example evaluation, please refer to my [paper](#acknowledgement).
+For more details on the additional error types, the new algorithm, and the example evaluation, please refer to my [paper](#acknowledgement).
 
 ## Table of content
 
@@ -165,7 +165,7 @@ Asterisks and spaces are optional. As long as commas and equal signs are used pr
 
 ### Import as module
 
-If you want to integrate and use FairEval in your own code, you can import it as a python module with
+If you want to integrate and use FairEval in your own code, you can import it as a Python module with
 
 > import FairEval
 
@@ -182,8 +182,8 @@ To count the different fine-grained error types in your data set, according to t
 
 The function expects a list of target spans and system spans. Each span is a 4-tuple of 
 - label: the span type as string
-- begin: the index of first token; equals end for spans of length 1
-- end: the index of the last token; equals begin for spans of length 1
+- begin: index of the first token; equals end for spans of length 1
+- end: index of the last token; equals begin for spans of length 1
 - tokens: a set of token indices included in the span (this allows the correct evaluation of partially and multiply overlapping spans; you can also use it to exclude punctutation inside of spans from the evaluation)
 
 To allow for changes of the token set, the span tuple is actually implemented as a list, e.g.,
@@ -251,7 +251,7 @@ span2 -X-------- False (no overlap)
 ```
 
 Possible output values are either one of the following strings
-- "TP" = span1 and span2 are identical, i.e., actually no error here
+- "TP" = span1 and span2 are identical, i.e., actually no boundary error here
 - "BES" = span2 is shorter and contained within span1 (with at most one identical boundary)
 - "BEL" = span2 is longer and contains span1 (with at most one identical boundary)
 - "BEO" = span1 and span2 overlap with no identical boundary
@@ -345,11 +345,11 @@ For the NER target data, the result would look like this:
 
 ## Example data
 
-In my study, I run an example evaluation on three different types of spans: named entities, chunks, and topological fields. The `/data` folder contains the target (i.e., gold standard) annotation and the system annotation. For license and copyright reasons, the data is provided in a custom format that only contains the span annotations and does not allow for the reconstruction of the original corpus data.
+In my study, I run an example evaluation on three different types of spans: named entities, chunks, and topological fields. The `/data` folder contains the target (i.e., gold standard) annotation and the system annotation. For license and copyright reasons, the data is provided in a [custom format](#input) that only contains the span annotations and does not allow for the reconstruction of the original corpus data.
 
   Annotation       | Evaluation data set
 :-----------------:|:---------------------------------------
-   NER   | The NER data set corresponds to the test section of the GermEval 2014 data set (Benikova et al. 2014). Only top-level entities from the four main classes are included.
+   NER   | The NER data set corresponds to the test partition of the GermEval 2014 data set (Benikova et al. 2014). Only top-level entities from the four main classes are included.
   Chunks   | The chunk annotations are taken from 10% of the chunked TüBa-D/Z corpus (Telljohann et al. 2017)
 Topological fields | The topological field annotations are taken from 10% of the TüBa-D/Z treebank (Telljohann et al. 2017)
 
@@ -359,7 +359,7 @@ More details about training and evaluation data sets and the NLP tools used for 
 
 If you use FairEval in your work, please cite the corresponding paper:
 
-- Ortmann, Katrin. Forthcoming. *Fine-Grained Error Analysis and Fair Evaluation of Labeled Spans*.
+- Ortmann, Katrin. *Fine-Grained Error Analysis and Fair Evaluation of Labeled Spans*. Accepted for presentation at LREC 2022.
 
 ## References
 
