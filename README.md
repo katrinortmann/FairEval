@@ -2,7 +2,7 @@
 
 The traditional evaluation of labeled spans with precision, recall, and F1-score leads to double penalties for close-to-correct annotations. As Manning (2006) argues in an article about named entity recognition, this can lead to undesirable effects when systems are optimized for these traditional metrics.
 
-Building on his ideas, in [Ortmann (forthcoming)](#acknowledgement), I developed a new evaluation method that more accurately reflects true annotation quality by ensuring that every error is counted only once. In addition to the traditional categories of true positives (`TP`), false positives (`FP`), and false negatives (`FN`), the new method takes into account the more fine-grained error types suggested by Manning: labeling errors (`LE`), boundary errors (`BE`), and labeling-boundary errors (`LBE`). 
+Building on his ideas, in [Ortmann (2022)](#acknowledgement), I developed a new evaluation method that more accurately reflects true annotation quality by ensuring that every error is counted only once. In addition to the traditional categories of true positives (`TP`), false positives (`FP`), and false negatives (`FN`), the new method takes into account the more fine-grained error types suggested by Manning: labeling errors (`LE`), boundary errors (`BE`), and labeling-boundary errors (`LBE`). 
 
 In addition, I also distinguish between different types of boundary errors, which enable an even more detailed error analysis:
 
@@ -178,7 +178,7 @@ Suggested applications include:
 
 #### Determine fine-grained error types
 
-To count the different fine-grained error types in your data set, according to the algorithm described in Ortmann (forthcoming), you can use the function `compare_spans(target_spans, system_spans, focus)`. The `focus` argument is optional and can be set to "system" or "target" (default), depending on which label should be counted in the case of labeling and labeling-boundary errors.
+To count the different fine-grained error types in your data set, according to the algorithm described in Ortmann (2022), you can use the function `compare_spans(target_spans, system_spans, focus)`. The `focus` argument is optional and can be set to "system" or "target" (default), depending on which label should be counted in the case of labeling and labeling-boundary errors.
 
 The function expects a list of target spans and system spans. Each span is a 4-tuple of 
 - label: the span type as string
@@ -359,7 +359,7 @@ More details about training and evaluation data sets and the NLP tools used for 
 
 If you use FairEval in your work, please cite the corresponding paper:
 
-- Ortmann, Katrin. *Fine-Grained Error Analysis and Fair Evaluation of Labeled Spans*. Accepted for presentation at LREC 2022.
+- Ortmann, Katrin. 2022. Fine-Grained Error Analysis and Fair Evaluation of Labeled Spans. In *Proceedings of the Language Resources and Evaluation Conference (LREC)*, Marseille, France, pages 1400–1407.
 
 ## References
 
@@ -367,6 +367,6 @@ Benikova, D., Biemann, C., Kisselew, M., and Padó, S. 2014. *Germeval 2014 name
 
 Manning, C. 2006. *Doing Named Entity Recognition? Don’t optimize for F1*. Retreived from https://nlpers.blogspot.com/2006/08/doing-named-entity-recognition-dont.html.
 
-Ortmann, K. Forthcoming. *Fine-Grained Error Analysis and Fair Evaluation of Labeled Spans*.
+Ortmann, K. 2022. Fine-Grained Error Analysis and Fair Evaluation of Labeled Spans. In *Proceedings of the Language Resources and Evaluation Conference (LREC)*, Marseille, France, pages 1400–1407.
 
 Telljohann, H., Hinrichs, E. W., Kübler, S., Zinsmeister, H., and Beck, K. 2017. *Stylebook for the Tübingen Treebank of Written German (TüBa-D/Z)*. Seminar für Sprachwissenschaft, Universität Tübingen, Germany.
