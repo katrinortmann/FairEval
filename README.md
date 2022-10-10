@@ -359,7 +359,7 @@ More details about training and evaluation data sets and the NLP tools used for 
 
 If you use FairEval in your work, please cite the corresponding paper:
 
-- Ortmann, Katrin. 2022. Fine-Grained Error Analysis and Fair Evaluation of Labeled Spans. In *Proceedings of the Language Resources and Evaluation Conference (LREC)*, Marseille, France, pages 1400–1407.
+- Ortmann, Katrin. 2022. Fine-Grained Error Analysis and Fair Evaluation of Labeled Spans. In *Proceedings of the Language Resources and Evaluation Conference (LREC)*, Marseille, France, pages 1400–1407. [PDF](https://aclanthology.org/2022.lrec-1.150.pdf)
 
 ## References
 
