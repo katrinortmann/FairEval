@@ -16,6 +16,16 @@ In the `/data` folder, I also provide the example [data sets](#example-data) fro
 
 For more details on the additional error types, the new algorithm, and the example evaluation, please refer to my [paper](#acknowledgement).
 
+
+## NEW: Hugging Face Version
+
+The FairEval algorithm has been integrated into [Hugging Face](https://huggingface.co/spaces/hpi-dhc/FairEval) for free and easy usage by the AI/NLP community.
+It provides the default behaviour as described in the paper, with `FP`, `FN`, `LE`, `BE`, and `LBE` errors and default weights.
+Thanks to Ignacio Llorca Rodríguez and Florian Borchert ([@phlobo](https://github.com/phlobo)) from [@hpi-dhc](https://github.com/hpi-dhc) for the implementation! 
+
+If you need more customization options, see the documentation in this repository.
+
+
 ## Table of content
 
 1. [Usage](#usage)  
